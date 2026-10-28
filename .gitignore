@@ -218,3 +218,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Node.js (для Frontend на React)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Системные файлы (Windows / macOS)
+.DS_Store
+Thumbs.db
