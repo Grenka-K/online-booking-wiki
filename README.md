@@ -1,6 +1,6 @@
 # 🚀 АС «Онлайн-запись в парикмахерской»
 
-[![Wiki](https://img.shields.io/badge/Документация-Wiki-blueviolet?style=for-the-badge&logo=github)](https://github.com/ВашНик/online-booking-wiki/wiki)
+[![Wiki](https://img.shields.io/badge/Документация-Wiki-blueviolet?style=for-the-badge&logo=github)](https://github.com/Grenka-K/online-booking-wiki/wiki)
 
 ## 💡 О проекте
 Разработка автоматизированной системы для малого бизнеса (салон красоты). 
