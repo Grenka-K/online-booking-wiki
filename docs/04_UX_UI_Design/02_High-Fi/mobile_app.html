@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-запись (Мобильная версия)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #E2E8F0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            background-color: #FAFAFA;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #000;
+        }
+
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; background-color: #FAFAFA;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .screen.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .welcome-content { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 40px; text-align: center; }
+        .logo { font-size: 80px; margin-bottom: 20px; }
+        .welcome-content h1 { color: #1A1A1A; margin-bottom: 10px; font-size: 28px;}
+        .welcome-content p { color: #666; font-size: 16px; line-height: 1.5; margin-bottom: 30px; }
+
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #FAFAFA; position: sticky; top: 0; z-index: 10; }
+        .header h2 { font-size: 18px; margin: 0; color: #1A1A1A; }
+        .back-icon { font-size: 24px; color: #1A1A1A; cursor: pointer; padding: 5px 15px 5px 0; transition: 0.2s;}
+
+        .content { padding: 0 20px; flex-grow: 1; overflow-y: auto; }
+        .label { font-weight: 700; font-size: 14px; color: #1A1A1A; margin: 20px 0 10px 0; }
+
+        .select-wrapper { position: relative; margin-bottom: 15px; z-index: 50;}
+        .select-box { background: white; padding: 16px; border-radius: 12px; border: 1px solid #E0E0E0; display: flex; justify-content: space-between; font-weight: 600; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; transition: 0.2s; }
+        .select-box:hover { border-color: #20C997; }
+        .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border-radius: 12px; border: 1px solid #E0E0E0; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 5px; overflow: hidden; z-index: 100; }
+        .dropdown-menu.active { display: block; animation: fadeIn 0.2s ease; }
+        .dropdown-item { padding: 15px 16px; border-bottom: 1px solid #F0F0F0; cursor: pointer; font-weight: 500; color: #333; }
+        .dropdown-item:hover { background: #F0FDF4; color: #20C997; }
+
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; padding: 15px; background: white; }
+        .cal-header { text-align: center; font-size: 11px; color: #888; font-weight: 600; padding-bottom: 5px; }
+        .cal-day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; background: #FAFAFA; color: #333; transition: 0.2s; }
+        .cal-day:hover:not(.disabled) { background: #F0FDF4; }
+        .cal-day.active { background: #20C997; color: white; }
+        .cal-day.disabled { background: transparent; color: #D1D5DB; cursor: not-allowed; }
+
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .master-card { background: white; padding: 15px 10px; border-radius: 16px; border: 2px solid #E0E0E0; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; }
+        .master-card.active { border-color: #20C997; background: #F0FDF4; }
+        .master-card.hidden { display: none; }
+        .avatar { font-size: 30px; margin-bottom: 5px; }
+        .name { font-weight: 700; font-size: 14px; color: #1A1A1A; }
+        .rating { font-size: 12px; color: #888; margin-top: 4px; }
+
+        .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;}
+        .time-slot { background: white; padding: 12px 0; text-align: center; border-radius: 12px; border: 2px solid #E0E0E0; font-weight: 600; color: #333; cursor: pointer; transition: 0.2s; }
+        .time-slot.active { border-color: #20C997; background: #F0FDF4; color: #20C997; }
+        .time-slot.disabled { background: #F5F5F5; color: #BDBDBD; border-color: #F5F5F5; cursor: not-allowed; text-decoration: line-through; }
+
+        .footer { padding: 20px; background: white; border-top: 1px solid #EEE; padding-bottom: 30px; position: absolute; bottom: 0; width: 100%; box-sizing: border-box; }
+
+        .btn-primary { width: 100%; padding: 18px; border: none; border-radius: 16px; background-color: #20C997; color: white; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(32, 201, 151, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-primary:disabled { background-color: #E0E0E0; color: #9E9E9E; cursor: not-allowed; box-shadow: none; }
+        .btn-secondary { width: 100%; padding: 18px; border: 2px solid #20C997; border-radius: 16px; background-color: transparent; color: #20C997; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 15px; }
+
+        .spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s infinite linear; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #333; }
+        .input-group input, .input-group textarea { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #E0E0E0; box-sizing: border-box; font-size: 15px; outline: none; transition: 0.2s; font-family: 'Inter', sans-serif; }
+        .input-group input:focus, .input-group textarea:focus { border-color: #20C997; box-shadow: 0 0 0 3px rgba(32, 201, 151, 0.2); }
+
+        .summary-box { background: white; padding: 20px; border-radius: 16px; border: 1px solid #E0E0E0; margin-top: 10px; margin-bottom: 20px; }
+        .summary-box p { margin: 8px 0; font-size: 14px; color: #333; }
+        .summary-title { font-weight: 700; font-size: 16px !important; margin-bottom: 12px !important; color: #1A1A1A !important;}
+
+        .checkbox-group { display: flex; gap: 10px; align-items: flex-start; margin-top: 15px;}
+        .checkbox-group input { width: 20px; height: 20px; margin-top: 2px; accent-color: #20C997; cursor: pointer; }
+        .checkbox-group label { font-size: 12px; color: #666; line-height: 1.4; cursor: pointer;}
+
+        .appointment-card { background: white; padding: 15px; border-radius: 16px; border: 1px solid #E0E0E0; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 10px; }
+        .break-card { background: #F5F5F5; border: 1px dashed #BDBDBD; }
+        .appointment-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .appointment-time { font-weight: 700; font-size: 16px; color: #1A1A1A; }
+        .appointment-client { font-weight: 600; font-size: 14px; color: #333; margin-top: 4px;}
+        .appointment-service { font-size: 13px; color: #666; }
+        
+        .appointment-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-cancel-sm { flex: 1; padding: 10px; border: 1px solid #d32f2f; border-radius: 8px; background: transparent; color: #d32f2f; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-done-sm { flex: 1; padding: 10px; border: none; border-radius: 8px; background: #20C997; color: white; font-weight: 600; cursor: pointer; transition: 0.2s; }
+
+        .status-badge { display: inline-block; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 700; text-align: center; width: 100%; }
+        .status-done { background: #E8F5E9; color: #2E7D32; }
+        .status-cancelled { background: #FFEBEE; color: #C62828; }
+        .logout-btn { color: #d32f2f; font-weight: 600; font-size: 14px; cursor: pointer; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;}
+        .tab { padding: 8px 12px; border-radius: 20px; border: 1px solid #E0E0E0; background: white; font-size: 13px; cursor: pointer; white-space: nowrap;}
+        .tab.active { background: #1A1A1A; color: white; border-color: #1A1A1A; }
+
+        .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; height: 50%; text-align: center; color: #888; margin-top: 40px; }
+        .empty-state .icon { font-size: 60px; margin-bottom: 15px; opacity: 0.5; }
+        .empty-state p { font-size: 16px; font-weight: 600; }
+
+        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 12px; padding: 16px; position: absolute; z-index: 200; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; font-weight: 600; opacity: 0; transition: opacity 0.3s, bottom 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+        #toast.success { background-color: #20C997; }
+        #toast.error { background-color: #d32f2f; }
+
+        .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: white; width: 80%; padding: 25px; border-radius: 20px; text-align: center; }
+        .time-select-group { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; gap: 10px;}
+        .time-select-group select { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #E0E0E0; font-family: 'Inter', sans-serif;}
+        .modal-actions { display: flex; gap: 10px; }
+
+        /* Стили для звезд */
+        .stars-container { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        .star { font-size: 40px; cursor: pointer; color: #E0E0E0; transition: color 0.2s; }
+        .star.active { color: #FFC107; }
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame">
+        <!-- ЭКРАН 1 -->
+        <div id="screen-1" class="screen active">
+            <div class="welcome-content">
+                <div class="logo">✂️</div>
+                <h1>Добро пожаловать!</h1>
+                <p>Пожалуйста, выберите вашу роль для входа в систему.</p>
+                <button class="btn-primary" id="btn-role-client" style="margin-bottom: 15px;">Я КЛИЕНТ</button>
+                <button class="btn-secondary" id="btn-role-master">Я МАСТЕР</button>
+                <button class="btn-secondary" id="btn-my-appts" style="border-color: #ccc; color: #333;">МОИ ЗАПИСИ</button>
+            </div>
+        </div>
+
+        <!-- АВТОРИЗАЦИЯ -->
+        <div id="screen-login" class="screen">
+            <div class="header">
+                <span class="back-icon" id="btn-back-login">←</span>
+                <h2>Вход для мастера</h2>
+            </div>
+            <div class="content" style="justify-content: center; display: flex; flex-direction: column;">
+                <div class="input-group">
+                    <label>Номер телефона:</label>
+                    <input type="tel" id="masterPhone" placeholder="+7 (___) ___-__-__" maxlength="18">
+                </div>
+                <div class="input-group">
+                    <label>Пароль:</label>
+                    <input type="password" id="masterPassword" placeholder="****">
+                </div>
+                <button class="btn-primary" id="btn-login-submit" disabled style="margin-top: 10px;">ВОЙТИ</button>
+                <p style="text-align: center; font-size: 12px; color: #888; margin-top: 20px;">
+                    Тестовые пароли:<br>Иван: 0001 | Анна: 0002 | Олег: 0003
+                </p>
+            </div>
+        </div>
+
+        <!-- МАСТЕР -->
+        <div id="screen-master" class="screen">
+            <div class="header">
+                <h2 id="master-name-header">Мастер</h2>
+                <span class="logout-btn" id="btn-logout">Выйти</span>
+            </div>
+            <div class="content" style="padding-bottom: 100px;">
+                <div class="tabs">
+                    <div class="tab active" onclick="filterMaster('all')">Все</div>
+                    <div class="tab" onclick="filterMaster('pending')">Ожидают</div>
+                    <div class="tab" onclick="filterMaster('done')">Выполнены</div>
+                    <div class="tab" onclick="filterMaster('cancelled')">Отменены</div>
+                </div>
+                <div id="empty-state" class="empty-state">
+                    <div class="icon">☕</div>
+                    <p>У вас нет записей.</p>
+                </div>
+                <div id="schedule-container"></div>
+                <div id="revenue-box" style="display: none; margin-top: 20px; padding: 15px; background: #E8F5E9; border-radius: 12px; text-align: center;">
+                    <p style="margin: 0; font-size: 14px; color: #2E7D32;">Выручка за сегодня:</p>
+                    <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: 700; color: #2E7D32;" id="revenue-value">0 ₽</p>
+                </div>
+            </div>
+            <div class="footer">
+                <button class="btn-secondary" id="btn-open-break">+ ЗАКРЫТЬ ВРЕМЯ</button>
+            </div>
+        </div>
+
+        <!-- МОИ ЗАПИСИ (КЛИЕНТ) -->
+        <div id="screen-client-appts" class="screen">
+            <div class="header">
+                <span class="back-icon" id="btn-back-client-appts">←</span>
+                <h2>Мои записи</h2>
+            </div>
+            <div class="content">
+                <div id="client-empty-state" class="empty-state">
+                    <div class="icon">📅</div>
+                    <p>У вас пока нет записей.</p>
+                </div>
+                <div id="client-appts-container"></div>
+            </div>
+        </div>
+
+        <!-- МОДАЛЬНОЕ ОКНО ПЕРЕРЫВА -->
+        <div class="modal-overlay" id="breakModal">
+            <div class="modal-content">
+                <h3>Закрыть на перерыв</h3>
+                <div class="time-select-group">
+                    <select id="breakStart">
+                        <option value="08:30">08:30</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:30">17:30</option>
+                        <option value="19:00">19:00</option>
+                    </select>
+                    <span>до</span>
+                    <select id="breakEnd">
+                        <option value="10:00">10:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:30">17:30</option>
+                        <option value="19:00">19:00</option>
+                        <option value="20:30">20:30</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel-sm" id="btn-close-break">Отмена</button>
+                    <button class="btn-done-sm" id="btn-save-break">Сохранить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 2: ВЫБОР УСЛУГ -->
+        <div id="screen-2" class="screen">
+            <div class="header">
+                <span class="back-icon" id="btn-back-1">←</span>
+                <h2>Онлайн запись</h2>
+            </div>
+            <div class="content">
+                <p class="label">1. Выберите услугу:</p>
+                <div class="select-wrapper">
+                    <div class="select-box" id="serviceBox">
+                        <span id="serviceText">Стрижка</span>
+                        <span>⌄</span>
+                    </div>
+                    <div class="dropdown-menu" id="serviceMenu">
+                        <div class="dropdown-item" onclick="selectService('Стрижка')">Стрижка</div>
+                        <div class="dropdown-item" onclick="selectService('Окрашивание')">Окрашивание</div>
+                        <div class="dropdown-item" onclick="selectService('Маникюр')">Маникюр</div>
+                        <div class="dropdown-item" onclick="selectService('Педикюр')">Педикюр</div>
+                        <div class="dropdown-item" onclick="selectService('Косметология')">Косметология</div>
+                    </div>
+                </div>
+
+                <p class="label">2. Выберите мастера:</p>
+                <div class="grid-3" id="masterGrid">
+                    <div class="master-card" data-name="Иван" id="master-ivan">
+                        <div class="avatar">👤</div><span class="name">Иван</span><span class="rating" id="rating-ivan">5.0 ⭐</span>
+                    </div>
+                    <div class="master-card active" data-name="Анна" id="master-anna">
+                        <div class="avatar">👤</div><span class="name">Анна</span><span class="rating" id="rating-anna">4.8 ⭐</span>
+                    </div>
+                    <div class="master-card" data-name="Олег" id="master-oleg">
+                        <div class="avatar">👤</div><span class="name">Олег</span><span class="rating" id="rating-oleg">4.9 ⭐</span>
+                    </div>
+                </div>
+
+                <p class="label">3. Выберите дату:</p>
+                <div class="select-wrapper">
+                    <div class="select-box" id="dateBox">
+                        <span id="dateText">24 Окт</span>
+                        <span>⌄</span>
+                    </div>
+                    <div class="dropdown-menu" id="dateMenu">
+                        <div class="calendar-grid" id="calendarGrid"></div>
+                    </div>
+                </div>
+
+                <p class="label">4. Выберите время:</p>
+                <div class="time-grid" id="timeGrid"></div>
+            </div>
+            <div class="footer">
+                <button class="btn-primary" id="btn-continue">ПРОДОЛЖИТЬ →</button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 3: ПОДТВЕРЖДЕНИЕ -->
+        <div id="screen-3" class="screen">
+            <div class="header">
+                <span class="back-icon" id="btn-back-2">←</span>
+                <h2>Подтверждение</h2>
+            </div>
+            <div class="content" style="padding-bottom: 100px;">
+                <div class="summary-box">
+                    <p class="summary-title">Ваша запись:</p>
+                    <p><b>Услуга:</b> <span id="summaryService">Стрижка</span></p>
+                    <p><b>Мастер:</b> <span id="summaryMaster">Анна</span></p>
+                    <p><b>Дата:</b> <span id="summaryDate">24 Окт</span></p>
+                    <p><b>Время:</b> <span id="summaryTime">-</span></p>
+                </div>
+                <div class="input-group">
+                    <label>Ваше имя:</label>
+                    <input type="text" id="nameInput" placeholder="Введите имя...">
+                </div>
+                <div class="input-group">
+                    <label>Телефон:</label>
+                    <input type="tel" id="phoneInput" placeholder="+7 (___) ___-__-__" maxlength="18">
+                </div>
+                
+                <!-- Галочка 152-ФЗ -->
+                <div class="checkbox-group">
+                    <input type="checkbox" id="agreeCheckbox">
+                    <label for="agreeCheckbox">Я даю согласие на обработку персональных данных (152-ФЗ)</label>
+                </div>
+
+                <!-- НОВАЯ ГАЛОЧКА: Реклама -->
+                <div class="checkbox-group">
+                    <input type="checkbox" id="marketingCheckbox">
+                    <label for="marketingCheckbox">Я согласен(на) получать информационные и рекламные рассылки (SMS, push, MAX)</label>
+                </div>
+
+            </div>
+            <div class="footer">
+                <button id="submitBtn" class="btn-primary" disabled>
+                    <span id="submitText">ЗАПИСАТЬСЯ</span>
+                    <div class="spinner" id="submitSpinner"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 4: УСПЕХ -->
+        <div id="screen-4" class="screen">
+            <div class="welcome-content">
+                <div class="logo" style="color: #20C997;">✅</div>
+                <h1 style="font-size: 24px; margin-bottom: 15px;">Вы успешно записаны!</h1>
+                <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                    Ждем вас <b><span id="successDate">24 Окт</span></b> в <b><span id="successTime">-</span></b><br>
+                    у мастера <b><span id="successMaster">Анна</span></b>.
+                </p>
+                <button class="btn-primary" id="btn-finish">ВЕРНУТЬСЯ НА ГЛАВНУЮ</button>
+            </div>
+        </div>
+
+        <!-- МОДАЛЬНОЕ ОКНО ОТЗЫВА -->
+        <div class="modal-overlay" id="reviewModal">
+            <div class="modal-content">
+                <h3>Как прошел ваш визит?</h3>
+                <p style="color: #666; font-size: 14px; margin-top: 5px;">Оцените работу мастера</p>
+                
+                <div class="stars-container">
+                    <span class="star" onclick="setRating(1)">★</span>
+                    <span class="star" onclick="setRating(2)">★</span>
+                    <span class="star" onclick="setRating(3)">★</span>
+                    <span class="star" onclick="setRating(4)">★</span>
+                    <span class="star" onclick="setRating(5)">★</span>
+                </div>
+
+                <div class="input-group" style="text-align: left; margin-bottom: 20px;">
+                    <label>Комментарий (необязательно):</label>
+                    <textarea id="reviewTextInput" rows="3" placeholder="Что понравилось или что можно улучшить..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-cancel-sm" onclick="closeReviewModal()">Отмена</button>
+                    <button class="btn-done-sm" id="btn-submit-review" onclick="submitReview()" disabled>Отправить</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            let appointments = [];
+            let currentMasterFilter = 'all';
+            let currentClientPhone = '';
+            let currentMaster = ''; 
+            let selectedMaster = 'Анна'; 
+            
+            let masterRatings = {
+                'Анна': { rating: 4.8, count: 128 },
+                'Иван': { rating: 5.0, count: 96 },
+                'Олег': { rating: 4.9, count: 84 }
+            };
+
+            const allTimeSlots = ["08:30", "10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00", "20:30"];
+            
+            let selectedDate = "24 Окт";
+            let selectedTime = null;
+
+            let currentReviewAppId = null;
+            let currentRating = 0;
+
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.innerText = message;
+                toast.className = `show ${type}`;
+                setTimeout(() => { toast.className = ''; }, 3000);
+            }
+
+            function showScreen(id) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                
+                if (id === 'screen-master') renderMasterSchedule();
+                if (id === 'screen-client-appts') renderClientAppointments();
+                if (id === 'screen-2') {
+                    renderCalendar();
+                    renderTimeSlots();
+                    updateMasterRatingsUI();
+                }
+            }
+
+            function updateMasterRatingsUI() {
+                document.getElementById('rating-anna').innerText = `${masterRatings['Анна'].rating.toFixed(1)} ⭐`;
+                document.getElementById('rating-ivan').innerText = `${masterRatings['Иван'].rating.toFixed(1)} ⭐`;
+                document.getElementById('rating-oleg').innerText = `${masterRatings['Олег'].rating.toFixed(1)} ⭐`;
+            }
+
+            document.getElementById('btn-role-client').addEventListener('click', () => showScreen('screen-2'));
+            document.getElementById('btn-role-master').addEventListener('click', () => showScreen('screen-login'));
+            document.getElementById('btn-my-appts').addEventListener('click', () => showScreen('screen-client-appts'));
+            document.getElementById('btn-back-client-appts').addEventListener('click', () => showScreen('screen-1'));
+            
+            document.getElementById('btn-back-login').addEventListener('click', () => showScreen('screen-1'));
+            document.getElementById('btn-back-1').addEventListener('click', () => showScreen('screen-1'));
+            document.getElementById('btn-logout').addEventListener('click', () => showScreen('screen-1'));
+
+            const masterPhone = document.getElementById('masterPhone');
+            const masterPassword = document.getElementById('masterPassword');
+            const btnLoginSubmit = document.getElementById('btn-login-submit');
+            
+            function checkLogin() {
+                btnLoginSubmit.disabled = !(masterPhone.value.length > 5 && masterPassword.value.length > 2);
+            }
+            masterPhone.addEventListener('input', checkLogin);
+            masterPassword.addEventListener('input', checkLogin);
+
+            btnLoginSubmit.addEventListener('click', () => {
+                const pwd = masterPassword.value;
+                if (pwd === '0001') currentMaster = 'Иван';
+                else if (pwd === '0002') currentMaster = 'Анна';
+                else if (pwd === '0003') currentMaster = 'Олег';
+                else { showToast('Неверный пароль!', 'error'); return; }
+
+                document.getElementById('master-name-header').innerText = `Мастер ${currentMaster}`;
+                showScreen('screen-master');
+                masterPhone.value = ''; 
+                masterPassword.value = ''; 
+                btnLoginSubmit.disabled = true;
+            });
+
+            function setupDropdown(boxId, menuId) {
+                const box = document.getElementById(boxId);
+                const menu = document.getElementById(menuId);
+                if (!box || !menu) return;
+                
+                box.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.dropdown-menu').forEach(m => {
+                        if (m.id !== menuId) m.classList.remove('active');
+                    });
+                    menu.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!box.contains(e.target) && !menu.contains(e.target)) {
+                        menu.classList.remove('active');
+                    }
+                });
+            }
+            setupDropdown('serviceBox', 'serviceMenu');
+            setupDropdown('dateBox', 'dateMenu');
+
+            window.selectService = function(serviceName) {
+                document.getElementById('serviceText').innerText = serviceName;
+                document.getElementById('summaryService').innerText = serviceName;
+                document.getElementById('serviceMenu').classList.remove('active');
+
+                const ivan = document.getElementById('master-ivan');
+                const anna = document.getElementById('master-anna');
+                const oleg = document.getElementById('master-oleg');
+
+                ivan.classList.remove('hidden', 'active');
+                anna.classList.remove('hidden', 'active');
+                oleg.classList.remove('hidden', 'active');
+
+                if (serviceName === 'Стрижка') {
+                    anna.classList.add('active');
+                    selectedMaster = 'Анна';
+                } else if (serviceName === 'Окрашивание') {
+                    oleg.classList.add('hidden');
+                    anna.classList.add('active');
+                    selectedMaster = 'Анна';
+                } else {
+                    ivan.classList.add('hidden');
+                    oleg.classList.add('hidden');
+                    anna.classList.add('active');
+                    selectedMaster = 'Анна';
+                }
+
+                document.getElementById('summaryMaster').innerText = selectedMaster;
+                renderTimeSlots(); 
+            };
+
+            const masterCards = document.querySelectorAll('.master-card');
+            const summaryMaster = document.getElementById('summaryMaster');
+            masterCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if(card.classList.contains('hidden')) return;
+                    masterCards.forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    selectedMaster = card.getAttribute('data-name');
+                    summaryMaster.innerText = selectedMaster;
+                    renderTimeSlots(); 
+                });
+            });
+
+            const calendarGrid = document.getElementById('calendarGrid');
+            function renderCalendar() {
+                calendarGrid.innerHTML = '';
+                const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+                daysOfWeek.forEach(day => {
+                    const div = document.createElement('div');
+                    div.className = 'cal-header';
+                    div.innerText = day;
+                    calendarGrid.appendChild(div);
+                });
+
+                for (let i = 1; i <= 30; i++) {
+                    const dateStr = `${i} Окт`;
+                    const div = document.createElement('div');
+                    div.className = 'cal-day';
+                    div.innerText = i;
+
+                    if (i < 24) {
+                        div.classList.add('disabled');
+                    } else {
+                        if (dateStr === selectedDate) div.classList.add('active');
+                        
+                        div.addEventListener('click', () => {
+                            selectedDate = dateStr;
+                            document.getElementById('dateText').innerText = selectedDate;
+                            document.getElementById('summaryDate').innerText = selectedDate;
+                            document.getElementById('dateMenu').classList.remove('active');
+                            
+                            selectedTime = null;
+                            document.getElementById('summaryTime').innerText = '-';
+                            renderTimeSlots();
+                            checkForm();
+                        });
+                    }
+                    calendarGrid.appendChild(div);
+                }
+            }
+
+            const timeGrid = document.getElementById('timeGrid');
+            const summaryTime = document.getElementById('summaryTime');
+
+            function renderTimeSlots() {
+                timeGrid.innerHTML = '';
+                allTimeSlots.forEach(time => {
+                    const isBooked = appointments.some(a => 
+                        a.type === 'appointment' && 
+                        a.date === selectedDate && 
+                        a.time === time && 
+                        a.master === selectedMaster && 
+                        a.status !== 'cancelled'
+                    );
+                    
+                    const isBreak = appointments.some(a => 
+                        a.type === 'break' && 
+                        a.date === selectedDate && 
+                        a.master === selectedMaster &&
+                        time >= a.start && time < a.end
+                    );
+                    
+                    const slot = document.createElement('div');
+                    slot.className = `time-slot ${(isBooked || isBreak) ? 'disabled' : ''}`;
+                    slot.innerText = time;
+
+                    if (!isBooked && !isBreak) {
+                        slot.addEventListener('click', () => {
+                            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('active'));
+                            slot.classList.add('active');
+                            selectedTime = time;
+                            summaryTime.innerText = time;
+                            checkForm();
+                        });
+                    }
+                    timeGrid.appendChild(slot);
+                });
+            }
+
+            const nameInput = document.getElementById('nameInput');
+            const phoneInput = document.getElementById('phoneInput');
+            const agreeCheckbox = document.getElementById('agreeCheckbox');
+            const marketingCheckbox = document.getElementById('marketingCheckbox');
+            const submitBtn = document.getElementById('submitBtn');
+
+            function applyPhoneMask(inputElement) {
+                inputElement.addEventListener('keydown', function(e) {
+                    if ([46, 8, 9, 27, 13, 110, 190].indexOf(e.keyCode) !== -1 ||
+                        (e.keyCode === 65 && e.ctrlKey === true) ||
+                        (e.keyCode === 67 && e.ctrlKey === true) ||
+                        (e.keyCode === 86 && e.ctrlKey === true) ||
+                        (e.keyCode >= 35 && e.keyCode <= 40)) {
+                        return;
+                    }
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });
+
+                inputElement.addEventListener('input', function (e) {
+                    let input = e.target.value.replace(/\D/g, '');
+                    let formatted = '';
+                    if (input.length > 0) {
+                        formatted = '+7 ';
+                        if (input.length > 1) formatted += '(' + input.substring(1, 4);
+                        if (input.length >= 4) formatted += ') ' + input.substring(4, 7);
+                        if (input.length >= 7) formatted += '-' + input.substring(7, 9);
+                        if (input.length >= 9) formatted += '-' + input.substring(9, 11);
+                    }
+                    e.target.value = formatted;
+                    
+                    if (inputElement.id === 'phoneInput') checkForm();
+                    if (inputElement.id === 'masterPhone') checkLogin();
+                });
+            }
+
+            applyPhoneMask(phoneInput);
+            applyPhoneMask(masterPhone);
+
+            function checkForm() {
+                const phoneDigits = phoneInput.value.replace(/\D/g, '');
+                const isValid = nameInput.value.trim().length > 1 && 
+                                phoneDigits.length >= 10 && 
+                                agreeCheckbox.checked &&
+                                selectedTime !== null;
+                submitBtn.disabled = !isValid;
+            }
+            nameInput.addEventListener('input', checkForm);
+            agreeCheckbox.addEventListener('change', checkForm);
+
+            document.getElementById('btn-continue').addEventListener('click', () => {
+                if(!selectedTime) { showToast('Выберите время!', 'error'); return; }
+                showScreen('screen-3');
+            });
+            document.getElementById('btn-back-2').addEventListener('click', () => showScreen('screen-2'));
+
+            submitBtn.addEventListener('click', () => {
+                const submitText = document.getElementById('submitText');
+                const submitSpinner = document.getElementById('submitSpinner');
+                
+                submitBtn.disabled = true;
+                submitText.style.display = 'none';
+                submitSpinner.style.display = 'block';
+
+                setTimeout(() => {
+                    const service = document.getElementById('summaryService').innerText;
+                    const clientName = nameInput.value;
+                    const clientPhone = phoneInput.value;
+                    
+                    currentClientPhone = clientPhone;
+
+                    appointments.push({
+                        id: Date.now(), 
+                        type: 'appointment', 
+                        time: selectedTime, 
+                        date: selectedDate,
+                        client: clientName, 
+                        phone: clientPhone, 
+                        service: service, 
+                        master: selectedMaster, 
+                        price: 1500, 
+                        status: 'pending',
+                        rating: null,
+                        reviewText: '',
+                        marketingConsent: marketingCheckbox.checked // <--- СОХРАНЯЕМ СОГЛАСИЕ НА РЕКЛАМУ
+                    });
+
+                    document.getElementById('successDate').innerText = selectedDate;
+                    document.getElementById('successTime').innerText = selectedTime;
+                    document.getElementById('successMaster').innerText = selectedMaster;
+                    
+                    showToast('Запись успешно создана!');
+                    showScreen('screen-4');
+
+                    submitBtn.disabled = false;
+                    submitText.style.display = 'block';
+                    submitSpinner.style.display = 'none';
+                }, 800);
+            });
+
+            document.getElementById('btn-finish').addEventListener('click', () => {
+                nameInput.value = ''; 
+                phoneInput.value = ''; 
+                agreeCheckbox.checked = false;
+                marketingCheckbox.checked = false; // <--- СБРАСЫВАЕМ ГАЛОЧКУ ПРИ НОВОЙ ЗАПИСИ
+                showScreen('screen-1');
+            });
+
+            // КАБИНЕТ МАСТЕРА
+            const scheduleContainer = document.getElementById('schedule-container');
+            const emptyState = document.getElementById('empty-state');
+            const revenueBox = document.getElementById('revenue-box');
+            const revenueValue = document.getElementById('revenue-value');
+
+            window.filterMaster = function(status) {
+                currentMasterFilter = status;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                event.target.classList.add('active');
+                renderMasterSchedule();
+            };
+
+            function renderMasterSchedule() {
+                scheduleContainer.innerHTML = '';
+                
+                let myAppointments = appointments.filter(a => a.master === currentMaster);
+                let filtered = myAppointments;
+
+                if (currentMasterFilter !== 'all') {
+                    filtered = myAppointments.filter(a => a.type === 'appointment' && a.status === currentMasterFilter);
+                }
+
+                if (filtered.length === 0) {
+                    emptyState.style.display = 'flex';
+                    revenueBox.style.display = 'none';
+                    return;
+                } else {
+                    emptyState.style.display = 'none';
+                }
+
+                const totalRevenue = myAppointments.filter(a => a.type === 'appointment' && a.status === 'done')
+                                                 .reduce((sum, a) => sum + (a.price || 0), 0);
+                if (totalRevenue > 0) {
+                    revenueBox.style.display = 'block';
+                    revenueValue.innerText = totalRevenue + ' ₽';
+                } else {
+                    revenueBox.style.display = 'none';
+                }
+
+                filtered.sort((a, b) => (a.time || a.start).localeCompare(b.time || b.start));
+
+                filtered.forEach(app => {
+                    const div = document.createElement('div');
+                    
+                    if (app.type === 'break') {
+                        div.className = 'appointment-card break-card';
+                        div.innerHTML = `
+                            <div class="appointment-header">
+                                <div>
+                                    <div class="appointment-time">⏸️ Перерыв (${app.date})</div>
+                                    <div class="appointment-client">С ${app.start} до ${app.end}</div>
+                                </div>
+                                <button class="btn-cancel-sm" style="width: auto; padding: 8px 12px; margin: 0;" onclick="window.removeBreak(${app.id})">Отменить</button>
+                            </div>
+                        `;
+                    } else {
+                        div.className = 'appointment-card';
+                        let actionsHtml = '';
+                        
+                        // Если клиент дал согласие на рекламу, показываем конвертик
+                        const marketingIcon = app.marketingConsent ? ' <span title="Согласен на рассылку" style="font-size:14px; color:#20C997; margin-left:5px;">✉️</span>' : '';
+
+                        if (app.status === 'pending') {
+                            actionsHtml = `<div class="appointment-actions"><button class="btn-cancel-sm" onclick="window.updateStatus(${app.id}, 'cancelled')">ОТМЕНИТЬ</button><button class="btn-done-sm" onclick="window.updateStatus(${app.id}, 'done')">ВЫПОЛНЕНО</button></div>`;
+                        } else if (app.status === 'done') {
+                            actionsHtml = `<div class="status-badge status-done">✅ ВЫПОЛНЕНО</div>`;
+                            if (app.rating) {
+                                actionsHtml += `<div style="margin-top:10px; font-size:12px; color:#666;">Клиент оставил отзыв: <span style="color:#FFC107; font-size:14px;">${'★'.repeat(app.rating)}</span></div>`;
+                            }
+                        } else if (app.status === 'reviewed') {
+                            actionsHtml = `<div class="status-badge status-done" style="background:#E8F5E9; color:#20C997;">⭐ ОТЗЫВ ПОЛУЧЕН</div>`;
+                            actionsHtml += `<div style="margin-top:10px; font-size:12px; color:#666;">Оценка: <span style="color:#FFC107; font-size:14px;">${'★'.repeat(app.rating)}</span></div>`;
+                            if (app.reviewText) actionsHtml += `<div style="margin-top:5px; font-size:12px; font-style:italic; color:#888;">"${app.reviewText}"</div>`;
+                        } else {
+                            actionsHtml = `<div class="status-badge status-cancelled">❌ ОТМЕНЕНО</div>`;
+                        }
+
+                        div.innerHTML = `<div class="appointment-header"><div><div class="appointment-time">${app.time} <span style="font-size:12px;color:#888;">(${app.date})</span></div><div class="appointment-client">Клиент: ${app.client}${marketingIcon}</div><div class="appointment-service">${app.service}</div></div></div>${actionsHtml}`;
+                    }
+                    scheduleContainer.appendChild(div);
+                });
+            }
+
+            window.removeBreak = function(id) {
+                appointments = appointments.filter(a => a.id !== id);
+                showToast('Перерыв отменен');
+                renderMasterSchedule();
+            };
+
+            window.updateStatus = function(id, statusType) {
+                const app = appointments.find(a => a.id === id);
+                if (app) {
+                    app.status = statusType;
+                    if(statusType === 'done') {
+                        showToast('Услуга выполнена! Клиенту отправлен запрос на отзыв.');
+                    }
+                    if(statusType === 'cancelled') showToast('Запись отменена', 'error');
+                    renderMasterSchedule();
+                }
+            };
+
+            // ПЕРЕРЫВ
+            const breakModal = document.getElementById('breakModal');
+            document.getElementById('btn-open-break').addEventListener('click', () => breakModal.classList.add('active'));
+            document.getElementById('btn-close-break').addEventListener('click', () => breakModal.classList.remove('active'));
+            
+            document.getElementById('btn-save-break').addEventListener('click', () => {
+                const start = document.getElementById('breakStart').value;
+                const end = document.getElementById('breakEnd').value;
+                
+                if (start >= end) {
+                    showToast('Время окончания должно быть больше времени начала!', 'error');
+                    return;
+                }
+
+                const hasConflict = appointments.some(a => 
+                    a.type === 'appointment' && 
+                    a.master === currentMaster && 
+                    a.date === selectedDate && 
+                    a.status !== 'cancelled' && 
+                    (a.time >= start && a.time < end) 
+                );
+
+                if (hasConflict) {
+                    showToast('В это время уже есть запись клиента!', 'error');
+                    return;
+                }
+
+                appointments.push({ 
+                    id: Date.now(), 
+                    type: 'break', 
+                    date: selectedDate, 
+                    start: start, 
+                    end: end,
+                    master: currentMaster 
+                });
+                
+                breakModal.classList.remove('active');
+                showToast('Время закрыто на перерыв');
+                renderMasterSchedule();
+            });
+
+            // МОИ ЗАПИСИ (КЛИЕНТ)
+            const clientApptsContainer = document.getElementById('client-appts-container');
+            const clientEmptyState = document.getElementById('client-empty-state');
+
+            function renderClientAppointments() {
+                clientApptsContainer.innerHTML = '';
+                const myApps = appointments.filter(a => a.type === 'appointment' && (a.phone === currentClientPhone || currentClientPhone === ''));
+
+                if (myApps.length === 0) {
+                    clientEmptyState.style.display = 'flex';
+                    return;
+                } else {
+                    clientEmptyState.style.display = 'none';
+                }
+
+                myApps.forEach(app => {
+                    const div = document.createElement('div');
+                    div.className = 'appointment-card';
+                    let actionsHtml = '';
+                    
+                    if (app.status === 'pending') {
+                        actionsHtml = `<button class="btn-cancel-sm" onclick="window.cancelClientAppt(${app.id})">ОТМЕНИТЬ ЗАПИСЬ</button>`;
+                    } else if (app.status === 'done') {
+                        actionsHtml = `<button class="btn-primary" style="padding: 10px; font-size: 14px; border-radius: 8px;" onclick="window.openReviewModal(${app.id})">⭐ Оставить отзыв</button>`;
+                    } else if (app.status === 'reviewed') {
+                        actionsHtml = `<div class="status-badge status-done">✅ ВЫПОЛНЕНО</div>`;
+                        actionsHtml += `<div style="margin-top:10px; text-align:center; color:#FFC107; font-size:20px;">${'★'.repeat(app.rating)}${'☆'.repeat(5-app.rating)}</div>`;
+                        if (app.reviewText) actionsHtml += `<div style="margin-top:5px; font-size:12px; text-align:center; color:#888;">"${app.reviewText}"</div>`;
+                    } else {
+                        actionsHtml = `<div class="status-badge status-cancelled">❌ ОТМЕНЕНО</div>`;
+                    }
+                    
+                    div.innerHTML = `<div class="appointment-header"><div><div class="appointment-time">${app.time} <span style="font-size:12px;color:#888;">(${app.date})</span></div><div class="appointment-client">Мастер: ${app.master}</div><div class="appointment-service">${app.service}</div></div></div><div style="margin-top: 10px;">${actionsHtml}</div>`;
+                    clientApptsContainer.appendChild(div);
+                });
+            }
+
+            window.cancelClientAppt = function(id) {
+                const app = appointments.find(a => a.id === id);
+                if (app) {
+                    app.status = 'cancelled';
+                    showToast('Вы отменили запись', 'error');
+                    renderClientAppointments();
+                }
+            };
+
+            // СИСТЕМА ОТЗЫВОВ
+            const reviewModal = document.getElementById('reviewModal');
+            const starElements = document.querySelectorAll('.star');
+            const btnSubmitReview = document.getElementById('btn-submit-review');
+
+            window.openReviewModal = function(id) {
+                currentReviewAppId = id;
+                currentRating = 0;
+                document.getElementById('reviewTextInput').value = '';
+                updateStarsUI(0);
+                btnSubmitReview.disabled = true;
+                reviewModal.classList.add('active');
+            };
+
+            window.closeReviewModal = function() {
+                reviewModal.classList.remove('active');
+            };
+
+            window.setRating = function(val) {
+                currentRating = val;
+                updateStarsUI(val);
+                btnSubmitReview.disabled = false;
+            };
+
+            function updateStarsUI(rating) {
+                starElements.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+
+            window.submitReview = function() {
+                if (!currentReviewAppId || currentRating === 0) return;
+
+                const app = appointments.find(a => a.id === currentReviewAppId);
+                if (app) {
+                    app.status = 'reviewed';
+                    app.rating = currentRating;
+                    app.reviewText = document.getElementById('reviewTextInput').value;
+
+                    const master = app.master;
+                    const oldTotal = masterRatings[master].rating * masterRatings[master].count;
+                    const newCount = masterRatings[master].count + 1;
+                    const newAvg = (oldTotal + currentRating) / newCount;
+                    
+                    masterRatings[master].rating = newAvg;
+                    masterRatings[master].count = newCount;
+
+                    closeReviewModal();
+                    showToast('Спасибо за ваш отзыв!');
+                    renderClientAppointments();
+                }
+            };
+
+            showScreen('screen-1');
+        });
+    </script>
+</body>
+</html>
