@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Салон красоты | Премиум-запись</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        html { scroll-behavior: smooth; }
+        
+        :root {
+            --primary: #0F5132;
+            --primary-hover: #0A3D25;
+            --accent: #D4AF37;
+            --text-main: #2D2D2D;
+            --text-muted: #7A7A7A;
+            --bg: #FDFBF7;
+            --white: #FFFFFF;
+            --border: #EAE5D9;
+            --danger: #D32F2F;
+            --warning: #F39C12;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- ШАПКА --- */
+        header {
+            background: rgba(253, 251, 247, 0.9);
+            backdrop-filter: blur(15px);
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo { 
+            font-family: var(--font-heading); 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: var(--primary); 
+            letter-spacing: -0.5px; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a, .nav-links .link-btn { text-decoration: none; color: var(--text-main); font-weight: 600; transition: color 0.3s; font-size: 15px; cursor: pointer; background: none; border: none; font-family: var(--font-body); }
+        .nav-links a:hover, .nav-links .link-btn:hover { color: var(--primary); }
+        .btn-login-nav { color: var(--text-muted); font-size: 14px; cursor: pointer; text-decoration: underline; transition: 0.3s; font-weight: 500; }
+        .btn-login-nav:hover { color: var(--primary); }
+        
+        .btn-primary {
+            background: var(--primary); color: white; border: none; padding: 16px 32px;
+            border-radius: 50px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(15, 81, 50, 0.2); font-family: var(--font-body);
+        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 12px 25px rgba(15, 81, 50, 0.3); }
+        .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* --- ГЛАВНЫЙ ЭКРАН --- */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 50px;
+        }
+        .hero-content { flex: 1; max-width: 600px; }
+        .hero-subtitle { color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; font-size: 14px; }
+        .hero h1 { font-family: var(--font-heading); font-size: 64px; margin-bottom: 25px; color: var(--primary); font-weight: 700; line-height: 1.1; }
+        .hero p { font-size: 18px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.6; }
+        .hero-image { flex: 1; position: relative; }
+        .hero-image img { width: 100%; max-width: 600px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); object-fit: cover; aspect-ratio: 4/5; }
+        .hero-image::before { content: ''; position: absolute; top: -20px; right: -20px; width: 100%; height: 100%; border: 2px solid var(--accent); border-radius: 30px; z-index: -1; }
+
+        /* --- СЕКЦИИ --- */
+        section { padding: 100px 5%; }
+        section:nth-child(even) { background: var(--white); }
+        .section-title { font-family: var(--font-heading); font-size: 42px; text-align: center; margin-bottom: 60px; color: var(--primary); }
+        
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .service-card { background: var(--bg); padding: 40px 30px; border-radius: 20px; text-align: center; transition: 0.4s; border: 1px solid var(--border); cursor: pointer; position: relative; overflow: hidden; }
+        .service-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); background: var(--white); border-color: var(--accent); }
+        .service-card h3 { font-family: var(--font-heading); font-size: 24px; margin-bottom: 15px; color: var(--primary); }
+        .service-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+        .service-card .price { color: var(--primary); font-weight: 700; font-size: 22px; }
+        .service-card .more-btn { display: inline-block; margin-top: 20px; color: var(--accent); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .masters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
+        .master-card { background: var(--bg); border-radius: 24px; padding: 40px 30px; text-align: center; transition: all 0.4s; border: 1px solid var(--border); cursor: pointer; }
+        .master-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); border-color: var(--accent); }
+        .master-avatar { width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 25px; object-fit: cover; border: 4px solid var(--white); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .master-name { font-family: var(--font-heading); font-size: 26px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+        .master-rating { color: var(--accent); font-weight: 600; margin-bottom: 15px; font-size: 15px; }
+        .master-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+        footer { background: var(--primary); color: white; padding: 80px 5%; text-align: center; }
+        footer h2 { font-family: var(--font-heading); font-size: 36px; margin-bottom: 30px; color: var(--accent); }
+        footer p { color: #d1d5db; font-size: 16px; margin-bottom: 15px; }
+        footer .footer-logo { font-family: var(--font-heading); font-size: 32px; font-weight: 700; margin-bottom: 20px; color: white;}
+
+        /* --- МОДАЛЬНЫЕ ОКНА --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 81, 50, 0.4); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; color: var(--text-muted); background: none; border: none; transition: 0.3s; z-index: 10;}
+        .close-modal:hover { color: var(--danger); transform: rotate(90deg); }
+
+        /* Окно записи */
+        .modal-content { background: var(--white); width: 1100px; max-width: 95%; height: 85vh; border-radius: 30px; display: flex; overflow: hidden; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.2); animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-left { flex: 1.5; padding: 50px; overflow-y: auto; background: var(--bg); }
+        .modal-right { flex: 1; padding: 50px; background: var(--white); display: flex; flex-direction: column; border-left: 1px solid var(--border); }
+        .modal-left h2 { font-family: var(--font-heading); font-size: 32px; color: var(--primary); margin-bottom: 30px; }
+        .step-label { font-weight: 600; margin: 30px 0 15px; font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .select-box { background: var(--white); padding: 18px; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; cursor: pointer; font-weight: 600; font-size: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: 0.3s; }
+        .select-box:hover { border-color: var(--accent); }
+        .dropdown-menu { display: none; position: absolute; background: var(--white); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); width: 100%; z-index: 10; margin-top: 8px; overflow: hidden; }
+        .dropdown-menu.active { display: block; }
+        .dropdown-item { padding: 16px 18px; cursor: pointer; transition: 0.2s; font-weight: 500; border-bottom: 1px solid #f0f0f0; }
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover { background: #FDFBF7; color: var(--primary); }
+
+        .masters-select { display: flex; gap: 15px; }
+        .m-select-card { flex: 1; background: var(--white); padding: 20px 15px; border-radius: 12px; border: 2px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; font-weight: 600; }
+        .m-select-card.active { border-color: var(--primary); background: #F0FDF4; color: var(--primary); box-shadow: 0 4px 12px rgba(15, 81, 50, 0.1); }
+        .m-select-card.hidden { display: none; }
+        
+        .date-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; }
+        .date-scroll::-webkit-scrollbar { height: 4px; }
+        .date-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .date-box { padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--white); cursor: pointer; text-align: center; min-width: 90px; transition: 0.3s; }
+        .date-box:hover { border-color: var(--accent); }
+        .date-box.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(15, 81, 50, 0.2); }
+        .date-box .day-name { font-size: 12px; opacity: 0.8; margin-bottom: 4px; font-weight: 600;}
+        .date-box .day-num { font-size: 22px; font-weight: 700; }
+
+        .time-select-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .t-slot { padding: 14px; text-align: center; border: 1px solid var(--border); border-radius: 10px; background: var(--white); cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .t-slot:hover { border-color: var(--accent); }
+        .t-slot.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(15, 81, 50, 0.2); }
+        .t-slot.disabled { background: #f4f4f4; color: #bbb; border-color: #f4f4f4; cursor: not-allowed; text-decoration: line-through; }
+
+        .summary-card { background: var(--bg); padding: 25px; border-radius: 16px; margin-bottom: 30px; border: 1px solid var(--border); }
+        .summary-card h3 { font-family: var(--font-heading); font-size: 20px; margin-bottom: 15px; color: var(--primary);}
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; color: var(--text-muted); }
+        .summary-row b { color: var(--text-main); font-weight: 600;}
+        .summary-total { font-family: var(--font-heading); font-size: 26px; font-weight: 700; margin-top: 20px; text-align: right; color: var(--primary); }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; margin-bottom: 8px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
+        .form-group input { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid var(--border); font-size: 15px; outline: none; transition: 0.3s; font-family: var(--font-body); background: var(--bg); }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.1); }
+        
+        .check-group { display: flex; gap: 12px; font-size: 13px; color: var(--text-muted); margin: 15px 0; line-height: 1.4; font-weight: 500;}
+        .check-group input { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+        .modal-right .btn-primary { margin-top: auto; width: 100%; padding: 20px; font-size: 16px; border-radius: 12px; }
+
+        .success-screen { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; width: 100%; background: var(--white); padding: 40px;}
+        .success-screen .icon { font-size: 80px; margin-bottom: 30px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        .success-screen h2 { font-family: var(--font-heading); font-size: 36px; color: var(--primary); margin-bottom: 15px;}
+
+        /* --- КАБИНЕТ МАСТЕРА --- */
+        .dashboard-page { display: none; min-height: 100vh; background: var(--bg); }
+        .dash-header { background: var(--white); padding: 25px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 15px rgba(0,0,0,0.03); border-bottom: 1px solid var(--border);}
+        .dash-content { padding: 50px 5%; max-width: 1400px; margin: 0 auto; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px; }
+        .stat-card { background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--border); }
+        .stat-title { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .stat-value { font-family: var(--font-heading); font-size: 42px; font-weight: 700; color: var(--primary); }
+        .tabs { display: flex; gap: 20px; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .tab { font-weight: 600; font-size: 16px; cursor: pointer; color: var(--text-muted); padding: 5px 10px; transition: 0.3s; position: relative; }
+        .tab:hover { color: var(--primary); }
+        .tab.active { color: var(--primary); }
+        .tab.active::after { content: ''; position: absolute; bottom: -16px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0;}
+        .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 25px; }
+        .app-card { background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border-left: 6px solid var(--primary); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: 0.3s;}
+        .app-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.06); transform: translateY(-3px);}
+        .app-card.break { border-left-color: var(--warning); background: #fffdf5; }
+        .app-card.cancelled { border-left-color: var(--danger); opacity: 0.7; }
+        .app-card.done { border-left-color: #ccc; }
+        .app-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center;}
+        .app-time { font-family: var(--font-heading); font-size: 28px; font-weight: 700; color: var(--primary); }
+        .app-date { color: var(--text-muted); font-size: 14px; font-weight: 600; background: var(--bg); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);}
+        .app-details h4 { font-size: 18px; margin-bottom: 6px; font-weight: 600; color: var(--text-main);}
+        .app-details p { font-size: 15px; color: var(--text-muted); }
+        .app-actions { display: flex; gap: 15px; margin-top: 25px; }
+        .btn-sm { padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; flex: 1; transition: 0.3s; font-family: var(--font-body);}
+        .btn-done-sm { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(15, 81, 50, 0.2);}
+        .btn-done-sm:hover { background: var(--primary-hover); }
+        .btn-cancel-sm { background: transparent; border: 2px solid var(--danger); color: var(--danger); }
+        .btn-cancel-sm:hover { background: #ffebee; }
+
+        /* --- АВТОРИЗАЦИЯ --- */
+        .login-page { display: none; justify-content: center; align-items: center; min-height: 100vh; background: var(--bg); }
+        .login-box { background: var(--white); padding: 60px; border-radius: 30px; width: 450px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); text-align: center; border: 1px solid var(--border); }
+        .login-box h2 { font-family: var(--font-heading); margin-bottom: 35px; font-size: 32px; color: var(--primary);}
+
+        /* --- МОДАЛЬНОЕ ОКНО ПЕРЕРЫВА --- */
+        .break-modal { background: var(--white); width: 450px; padding: 50px; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); text-align: center; animation: slideUp 0.3s ease; position: relative;}
+        .break-modal h3 { font-family: var(--font-heading); font-size: 28px; color: var(--primary); margin-bottom: 25px; }
+        .break-inputs { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;}
+        .break-inputs .date-input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); font-family: var(--font-body); font-size: 15px; font-weight: 600; outline: none; background: var(--bg); }
+        .break-inputs .time-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .break-inputs select { flex: 1; padding: 15px; border-radius: 12px; border: 1px solid var(--border); font-family: var(--font-body); font-size: 16px; font-weight: 600; outline: none; background: var(--white);}
+        .break-inputs span { font-weight: 600; color: var(--text-muted); }
+
+        /* --- МОДАЛКА ИНФО О МАСТЕРЕ --- */
+        .master-info-modal { background: var(--white); width: 600px; max-width: 90%; max-height: 85vh; padding: 40px; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; animation: slideUp 0.3s ease; }
+        .master-info-header { text-align: center; margin-bottom: 25px; }
+        .master-info-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--bg); margin-bottom: 15px; }
+        .master-info-name { font-family: var(--font-heading); font-size: 32px; color: var(--primary); margin-bottom: 8px; }
+        .master-info-rating { color: var(--accent); font-weight: 600; font-size: 16px; }
+        .master-info-reviews-title { font-family: var(--font-heading); font-size: 20px; color: var(--primary); margin-bottom: 15px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .master-info-reviews-list { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 15px; padding-right: 10px;}
+        .review-item { background: var(--bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
+        .review-item-stars { color: var(--accent); font-size: 18px; margin-bottom: 8px; }
+        .review-item-text { font-size: 14px; color: var(--text-main); line-height: 1.5; margin-bottom: 8px; font-style: italic;}
+        .review-item-meta { font-size: 12px; color: var(--text-muted); font-weight: 600;}
+        .no-reviews { text-align: center; color: var(--text-muted); padding: 30px; font-style: italic; }
+
+        /* --- МОИ ЗАПИСИ (КЛИЕНТ) --- */
+        .client-appts-modal { background: var(--white); width: 650px; max-width: 95%; max-height: 85vh; padding: 40px; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; animation: slideUp 0.3s ease; }
+        .client-appts-modal h2 { font-family: var(--font-heading); font-size: 32px; color: var(--primary); margin-bottom: 25px; }
+        .client-appts-list { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 15px; padding-right: 10px;}
+        .client-appt-card { background: var(--bg); padding: 20px; border-radius: 16px; border-left: 4px solid var(--primary); display: flex; flex-direction: column; gap: 10px;}
+        .client-appt-card.done { border-left-color: var(--primary); }
+        .client-appt-card.reviewed { border-left-color: var(--accent); }
+        .client-appt-card.cancelled { border-left-color: var(--danger); opacity: 0.7; }
+        .client-appt-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .client-appt-date { font-family: var(--font-heading); font-size: 20px; font-weight: 700; color: var(--primary); }
+        .client-appt-info { font-size: 14px; color: var(--text-muted); }
+        .client-appt-actions { margin-top: 10px; }
+
+        /* --- МОДАЛКА ОТЗЫВА --- */
+        .review-modal { background: var(--white); width: 500px; max-width: 90%; padding: 40px; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); text-align: center; position: relative; animation: slideUp 0.3s ease; }
+        .review-modal h2 { font-family: var(--font-heading); font-size: 28px; color: var(--primary); margin-bottom: 10px; }
+        .stars-container { display: flex; justify-content: center; gap: 10px; margin: 25px 0; }
+        .star { font-size: 45px; cursor: pointer; color: #E0E0E0; transition: color 0.2s; }
+        .star.active { color: var(--accent); }
+        .review-modal textarea { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); font-family: var(--font-body); font-size: 15px; outline: none; resize: none; margin-bottom: 20px; }
+        .review-modal textarea:focus { border-color: var(--primary); }
+
+        /* Уведомления */
+        #toast {
+            position: fixed; bottom: 40px; right: 40px; background: var(--primary); color: white;
+            padding: 20px 35px; border-radius: 12px; font-weight: 600; font-size: 15px; opacity: 0;
+            transform: translateY(30px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        #toast.show { opacity: 1; transform: translateY(0); }
+        #toast.error { background: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <!-- ================= КЛИЕНТСКИЙ САЙТ ================= -->
+    <div id="client-site">
+        <header>
+            <div class="logo">🌸 Салон красоты</div>
+            <div class="nav-links">
+                <a href="#services">Услуги</a>
+                <a href="#masters">Мастера</a>
+                <a href="#contacts">Контакты</a>
+                <button class="link-btn" onclick="openClientAppointments()">Мои записи</button>
+                <span class="btn-login-nav" onclick="showLoginPage()">Вход для сотрудников</span>
+                <button class="btn-primary" onclick="openModal()">Записаться онлайн</button>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-subtitle">Добро пожаловать в мир красоты</div>
+                <h1>Преображение начинается здесь</h1>
+                <p>Запишитесь к нашим лучшим мастерам онлайн за пару кликов. Мы работаем для вашей красоты.</p>
+                <button class="btn-primary" style="padding: 20px 50px; font-size: 18px;" onclick="openModal()">Выбрать время</button>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Салон красоты">
+            </div>
+        </section>
+
+        <section id="services">
+            <h2 class="section-title">Наши услуги</h2>
+            <div class="services-grid">
+                <div class="service-card" onclick="openServiceInfo('Стрижка')">
+                    <h3>Стрижка</h3>
+                    <p>Женская, мужская, детская. Подбор идеальной формы.</p>
+                    <div class="price">от 1500 ₽</div>
+                    <div class="more-btn">Подробнее</div>
+                </div>
+                <div class="service-card" onclick="openServiceInfo('Окрашивание')">
+                    <h3>Окрашивание</h3>
+                    <p>Любые техники, от классики до сложных блондов.</p>
+                    <div class="price">от 3000 ₽</div>
+                    <div class="more-btn">Подробнее</div>
+                </div>
+                <div class="service-card" onclick="openServiceInfo('Маникюр')">
+                    <h3>Маникюр</h3>
+                    <p>Аппаратный, комбинированный. Дизайн любой сложности.</p>
+                    <div class="price">от 2000 ₽</div>
+                    <div class="more-btn">Подробнее</div>
+                </div>
+                <div class="service-card" onclick="openServiceInfo('Косметология')">
+                    <h3>Косметология</h3>
+                    <p>Чистки, уходовые процедуры, пилинги.</p>
+                    <div class="price">от 3500 ₽</div>
+                    <div class="more-btn">Подробнее</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="masters">
+            <h2 class="section-title">Наши специалисты</h2>
+            <div class="masters-grid">
+                <div class="master-card" onclick="openMasterInfo('Анна')">
+                    <img class="master-avatar" src="https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Анна">
+                    <div class="master-name">Анна</div>
+                    <div class="master-rating" id="master-card-rating-Анна">Нет отзывов</div>
+                    <p class="master-desc">Универсал. Стрижки, окрашивание, маникюр.</p>
+                </div>
+                <div class="master-card" onclick="openMasterInfo('Иван')">
+                    <img class="master-avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Иван">
+                    <div class="master-name">Иван</div>
+                    <div class="master-rating" id="master-card-rating-Иван">Нет отзывов</div>
+                    <p class="master-desc">Специалист по мужским стрижкам и бороде.</p>
+                </div>
+                <div class="master-card" onclick="openMasterInfo('Олег')">
+                    <img class="master-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Олег">
+                    <div class="master-name">Олег</div>
+                    <div class="master-rating" id="master-card-rating-Олег">Нет отзывов</div>
+                    <p class="master-desc">Мастер стрижек и окрашивания.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer id="contacts">
+            <div class="footer-logo">🌸 Салон красоты</div>
+            <h2>Ждем вас</h2>
+            <p>📍 г. Москва, ул. Красоты, д. 15</p>
+            <p>📞 +7 (999) 123-45-67</p>
+            <p>🕒 Ежедневно с 08:30 до 21:00</p>
+        </footer>
+    </div>
+
+    <!-- ================= МОДАЛЬНЫЕ ОКНА ================= -->
+    
+    <div class="modal-overlay" id="bookingModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <div style="display: flex; width: 100%;" id="modalMainContent">
+                <div class="modal-left">
+                    <h2>Онлайн-запись</h2>
+                    <div class="step-label">1. Выберите услугу:</div>
+                    <div style="position: relative;">
+                        <div class="select-box" id="serviceBox" onclick="toggleServiceMenu()"><span id="serviceText">Стрижка</span><span>⌄</span></div>
+                        <div class="dropdown-menu" id="serviceMenu">
+                            <div class="dropdown-item" onclick="selectService('Стрижка')">Стрижка</div>
+                            <div class="dropdown-item" onclick="selectService('Окрашивание')">Окрашивание</div>
+                            <div class="dropdown-item" onclick="selectService('Маникюр')">Маникюр</div>
+                            <div class="dropdown-item" onclick="selectService('Педикюр')">Педикюр</div>
+                            <div class="dropdown-item" onclick="selectService('Косметология')">Косметология</div>
+                        </div>
+                    </div>
+                    <div class="step-label">2. Выберите мастера:</div>
+                    <div class="masters-select" id="modalMasterGrid">
+                        <div class="m-select-card" data-name="Иван" id="m-ivan" onclick="selectMaster('Иван', this)">Иван</div>
+                        <div class="m-select-card active" data-name="Анна" id="m-anna" onclick="selectMaster('Анна', this)">Анна</div>
+                        <div class="m-select-card" data-name="Олег" id="m-oleg" onclick="selectMaster('Олег', this)">Олег</div>
+                    </div>
+                    <div class="step-label">3. Выберите дату:</div>
+                    <div class="date-scroll" id="dateScroll"></div>
+                    <div class="step-label">4. Выберите время:</div>
+                    <div class="time-select-grid" id="timeGrid"></div>
+                </div>
+                <div class="modal-right">
+                    <div class="summary-card">
+                        <h3>Детали записи</h3>
+                        <div class="summary-row"><span>Услуга:</span> <b id="sumService">Стрижка</b></div>
+                        <div class="summary-row"><span>Мастер:</span> <b id="sumMaster">Анна</b></div>
+                        <div class="summary-row"><span>Дата:</span> <b id="sumDate">24 Окт</b></div>
+                        <div class="summary-row"><span>Время:</span> <b id="sumTime">-</b></div>
+                        <div class="summary-total">1500 ₽</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ваше имя</label>
+                        <input type="text" id="nameInput" placeholder="Введите имя" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label>Телефон</label>
+                        <input type="tel" id="phoneInput" placeholder="+7 (___) ___-__-__" maxlength="18">
+                    </div>
+                    <div class="check-group">
+                        <input type="checkbox" id="agreeCheckbox">
+                        <label for="agreeCheckbox">Я даю согласие на обработку персональных данных в соответствии с 152-ФЗ</label>
+                    </div>
+                    <div class="check-group">
+                        <input type="checkbox" id="marketingCheckbox">
+                        <label for="marketingCheckbox">Я согласен(на) получать информационные и рекламные рассылки</label>
+                    </div>
+                    <button class="btn-primary" id="submitBtn" disabled onclick="submitBooking()">Записаться</button>
+                </div>
+            </div>
+            <div class="success-screen" id="successScreen">
+                <div class="icon">✨</div>
+                <h2>Вы успешно записаны!</h2>
+                <p style="color: #666; margin-bottom: 40px; font-size: 18px; line-height: 1.6;" id="successText"></p>
+                <button class="btn-primary" style="width: 250px;" onclick="closeModal()">Отлично</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="serviceInfoModal">
+        <div class="modal-content" style="max-width: 500px; height: auto; flex-direction: column; padding: 50px; text-align: center;">
+            <button class="close-modal" onclick="closeServiceInfo()">×</button>
+            <h2 id="infoServiceTitle" style="font-family: var(--font-heading); font-size: 36px; color: var(--primary); margin-bottom: 20px;">Стрижка</h2>
+            <p id="infoServiceDesc" style="color: var(--text-muted); font-size: 16px; line-height: 1.6; margin-bottom: 30px;">...</p>
+            <span class="price" id="infoServicePrice" style="font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 30px; display: block;">от 1500 ₽</span>
+            <button class="btn-primary" style="width: 100%;" onclick="bookFromInfo()">Записаться на эту услугу</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="masterInfoModal">
+        <div class="master-info-modal">
+            <button class="close-modal" onclick="closeMasterInfo()">×</button>
+            <div class="master-info-header">
+                <img class="master-info-avatar" id="masterInfoAvatar" src="">
+                <h2 class="master-info-name" id="masterInfoName">Анна</h2>
+                <div class="master-info-rating" id="masterInfoRating">Нет отзывов</div>
+            </div>
+            <div class="master-info-reviews-title">Отзывы клиентов:</div>
+            <div class="master-info-reviews-list" id="masterInfoReviews"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="clientAppointmentsModal">
+        <div class="client-appts-modal">
+            <button class="close-modal" onclick="closeClientAppointments()">×</button>
+            <h2>Мои записи</h2>
+            <div class="client-appts-list" id="clientApptsList"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="reviewModal">
+        <div class="review-modal">
+            <button class="close-modal" onclick="closeReviewModal()">×</button>
+            <h2>Как прошел ваш визит?</h2>
+            <p style="color: var(--text-muted); font-size: 14px;">Оцените работу мастера</p>
+            <div class="stars-container">
+                <span class="star" onclick="setRating(1)">★</span>
+                <span class="star" onclick="setRating(2)">★</span>
+                <span class="star" onclick="setRating(3)">★</span>
+                <span class="star" onclick="setRating(4)">★</span>
+                <span class="star" onclick="setRating(5)">★</span>
+            </div>
+            <textarea id="reviewTextInput" rows="3" placeholder="Расскажите, что понравилось или что можно улучшить..."></textarea>
+            <button class="btn-primary" style="width: 100%;" id="submitReviewBtn" onclick="submitReview()" disabled>Отправить отзыв</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="breakModal">
+        <div class="break-modal">
+            <button class="close-modal" onclick="closeBreakModal()">×</button>
+            <h3>Закрыть на перерыв</h3>
+            <div class="break-inputs">
+                <input type="date" id="breakDate" class="date-input">
+                <div class="time-row">
+                    <select id="breakStart">
+                        <option value="08:30">08:30</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:30">17:30</option>
+                        <option value="19:00">19:00</option>
+                    </select>
+                    <span>—</span>
+                    <select id="breakEnd">
+                        <option value="10:00">10:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:30">17:30</option>
+                        <option value="19:00">19:00</option>
+                        <option value="20:30">20:30</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-cancel-sm" style="flex:1; padding: 15px; border-radius: 12px; font-weight: 600;" onclick="closeBreakModal()">Отмена</button>
+                <button class="btn-primary" style="flex:1; padding: 15px; border-radius: 12px;" onclick="saveBreak()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-page" id="loginPage">
+        <div class="login-box">
+            <h2>Вход для мастеров</h2>
+            <div class="form-group" style="text-align: left;">
+                <label>Телефон</label>
+                <input type="tel" id="masterPhone" placeholder="+7 (___) ___-__-__" maxlength="18">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Пароль</label>
+                <input type="password" id="masterPassword" placeholder="****">
+            </div>
+            <button class="btn-primary" style="width: 100%; margin-top: 15px; padding: 18px; font-size: 16px;" onclick="loginMaster()">Войти</button>
+            <p style="margin-top: 25px; font-size: 13px; color: #888; background: #f4f4f4; padding: 12px; border-radius: 8px; font-weight: 500;">
+                Подсказка: Иван - 0001, Анна - 0002, Олег - 0003
+            </p>
+            <button style="background:none; border:none; color:var(--text-muted); margin-top:20px; cursor:pointer; font-size: 14px; font-weight: 600;" onclick="hideLoginPage()">← Вернуться на сайт</button>
+        </div>
+    </div>
+
+    <div class="dashboard-page" id="masterDashboard">
+        <header class="dash-header">
+            <div class="logo">Кабинет мастера</div>
+            <div style="display: flex; align-items: center; gap: 25px;">
+                <span id="dashMasterName" style="font-weight: 700; font-size: 18px; color: var(--primary);">Мастер</span>
+                <button class="btn-primary" onclick="logoutMaster()" style="background: transparent; color: #d32f2f; box-shadow: none; border: 2px solid #d32f2f; padding: 10px 20px;">Выйти</button>
+            </div>
+        </header>
+        <div class="dash-content">
+            <div class="stats-row">
+                <div class="stat-card"><div class="stat-title">Записей на сегодня</div><div class="stat-value" id="dashTotalApps">0</div></div>
+                <div class="stat-card"><div class="stat-title">Выполнено</div><div class="stat-value" id="dashDoneApps">0</div></div>
+                <div class="stat-card"><div class="stat-title">Выручка за день</div><div class="stat-value green" id="dashRevenue">0 ₽</div></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <div class="tabs" style="margin-bottom: 0; border-bottom: none;">
+                    <div class="tab active" onclick="filterDash('all', this)">Все записи</div>
+                    <div class="tab" onclick="filterDash('pending', this)">Ожидают</div>
+                    <div class="tab" onclick="filterDash('done', this)">Выполнены</div>
+                    <div class="tab" onclick="filterDash('cancelled', this)">Отменены</div>
+                </div>
+                <button class="btn-primary" onclick="openBreakModal()" style="padding: 14px 24px; font-size: 14px; background: var(--warning); box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);">+ Закрыть время</button>
+            </div>
+            <div class="apps-grid" id="dashAppsGrid"></div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            let appointments = []; 
+            let currentMaster = ''; 
+            let selectedMaster = 'Анна';
+            let selectedDate = '24 Окт';
+            let selectedTime = null;
+            let selectedService = 'Стрижка';
+            let dashFilter = 'all';
+            let currentInfoService = 'Стрижка';
+            let currentClientPhone = '';
+
+            // РЕЙТИНГИ ОБНУЛЕНЫ
+            let masterRatings = {
+                'Анна': { rating: 0, count: 0 },
+                'Иван': { rating: 0, count: 0 },
+                'Олег': { rating: 0, count: 0 }
+            };
+
+            // ОТЗЫВЫ ОЧИЩЕНЫ
+            let masterReviews = {
+                'Анна': [],
+                'Иван': [],
+                'Олег': []
+            };
+
+            let masterAvatars = {
+                'Анна': 'https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
+                'Иван': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
+                'Олег': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80'
+            };
+
+            const allTimeSlots = ["08:30", "10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00", "20:30"];
+
+            let currentReviewAppId = null;
+            let currentRating = 0;
+
+            window.showToast = function(msg, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.innerText = msg;
+                toast.className = `show ${type}`;
+                setTimeout(() => toast.className = '', 3000);
+            }
+
+            function applyPhoneMask(inputElement) {
+                if (!inputElement) return;
+                inputElement.addEventListener('keydown', function(e) {
+                    if ([46, 8, 9, 27, 13, 110, 190].indexOf(e.keyCode) !== -1 ||
+                        (e.keyCode === 65 && e.ctrlKey === true) ||
+                        (e.keyCode === 67 && e.ctrlKey === true) ||
+                        (e.keyCode === 86 && e.ctrlKey === true) ||
+                        (e.keyCode >= 35 && e.keyCode <= 40)) return;
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });
+                inputElement.addEventListener('input', function (e) {
+                    let input = e.target.value.replace(/\D/g, '');
+                    let formatted = '';
+                    if (input.length > 0) {
+                        formatted = '+7 ';
+                        if (input.length > 1) formatted += '(' + input.substring(1, 4);
+                        if (input.length >= 4) formatted += ') ' + input.substring(4, 7);
+                        if (input.length >= 7) formatted += '-' + input.substring(7, 9);
+                        if (input.length >= 9) formatted += '-' + input.substring(9, 11);
+                    }
+                    e.target.value = formatted;
+                    if (inputElement.id === 'phoneInput') checkForm();
+                    if (inputElement.id === 'masterPhone') checkLogin();
+                });
+            }
+
+            window.showLoginPage = function() {
+                document.getElementById('client-site').style.display = 'none';
+                document.getElementById('loginPage').style.display = 'flex';
+            }
+            window.hideLoginPage = function() {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('client-site').style.display = 'block';
+            }
+
+            window.openServiceInfo = function(service) {
+                const info = {
+                    'Стрижка': { desc: 'Женская, мужская, детская. Подбор идеальной формы.', price: 'от 1500 ₽' },
+                    'Окрашивание': { desc: 'Любые техники, от классики до сложных блондов.', price: 'от 3000 ₽' },
+                    'Маникюр': { desc: 'Аппаратный, комбинированный. Дизайн любой сложности.', price: 'от 2000 ₽' },
+                    'Косметология': { desc: 'Чистки, уходовые процедуры, пилинги.', price: 'от 3500 ₽' }
+                };
+                document.getElementById('infoServiceTitle').innerText = service;
+                document.getElementById('infoServiceDesc').innerText = info[service].desc;
+                document.getElementById('infoServicePrice').innerText = info[service].price;
+                currentInfoService = service;
+                document.getElementById('serviceInfoModal').classList.add('active');
+            }
+            window.closeServiceInfo = function() {
+                document.getElementById('serviceInfoModal').classList.remove('active');
+            }
+            window.bookFromInfo = function() {
+                window.closeServiceInfo();
+                window.openModal();
+                window.selectService(currentInfoService);
+            }
+
+            window.openMasterInfo = function(name) {
+                document.getElementById('masterInfoAvatar').src = masterAvatars[name];
+                document.getElementById('masterInfoName').innerText = name;
+                
+                if (masterRatings[name].count === 0) {
+                    document.getElementById('masterInfoRating').innerHTML = `Нет отзывов`;
+                } else {
+                    document.getElementById('masterInfoRating').innerHTML = `⭐ ${masterRatings[name].rating.toFixed(1)} (${masterRatings[name].count} отзывов)`;
+                }
+                
+                const reviewsList = document.getElementById('masterInfoReviews');
+                reviewsList.innerHTML = '';
+                
+                if (masterReviews[name].length === 0) {
+                    reviewsList.innerHTML = '<p class="no-reviews">Пока нет отзывов. Будьте первым!</p>';
+                } else {
+                    masterReviews[name].forEach(review => {
+                        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                        const div = document.createElement('div');
+                        div.className = 'review-item';
+                        div.innerHTML = `
+                            <div class="review-item-stars">${stars}</div>
+                            <div class="review-item-text">"${review.text || 'Без комментария'}"</div>
+                            <div class="review-item-meta">— ${review.client}, ${review.date}</div>
+                        `;
+                        reviewsList.appendChild(div);
+                    });
+                }
+                document.getElementById('masterInfoModal').classList.add('active');
+            }
+            window.closeMasterInfo = function() {
+                document.getElementById('masterInfoModal').classList.remove('active');
+            }
+
+            function updateMasterCardRatings() {
+                ['Анна', 'Иван', 'Олег'].forEach(name => {
+                    const el = document.getElementById(`master-card-rating-${name}`);
+                    if (el) {
+                        if (masterRatings[name].count === 0) {
+                            el.innerText = `Нет отзывов`;
+                        } else {
+                            el.innerText = `⭐ ${masterRatings[name].rating.toFixed(1)} (${masterRatings[name].count} отзывов)`;
+                        }
+                    }
+                });
+            }
+
+            window.openModal = function() {
+                document.getElementById('bookingModal').classList.add('active');
+                renderCalendar();
+                renderTimeSlots();
+            }
+            window.closeModal = function() {
+                document.getElementById('bookingModal').classList.remove('active');
+                setTimeout(() => {
+                    document.getElementById('modalMainContent').style.display = 'flex';
+                    document.getElementById('successScreen').style.display = 'none';
+                    document.getElementById('nameInput').value = '';
+                    document.getElementById('phoneInput').value = '';
+                    document.getElementById('agreeCheckbox').checked = false;
+                    document.getElementById('marketingCheckbox').checked = false;
+                    document.getElementById('submitBtn').disabled = true;
+                    selectedTime = null;
+                    document.getElementById('sumTime').innerText = '-';
+                }, 300);
+            }
+            window.toggleServiceMenu = function() {
+                document.getElementById('serviceMenu').classList.toggle('active');
+            }
+
+            window.selectService = function(service) {
+                selectedService = service;
+                document.getElementById('serviceText').innerText = service;
+                document.getElementById('sumService').innerText = service;
+                document.getElementById('serviceMenu').classList.remove('active');
+
+                const ivan = document.getElementById('m-ivan');
+                const anna = document.getElementById('m-anna');
+                const oleg = document.getElementById('m-oleg');
+
+                ivan.classList.remove('hidden', 'active');
+                anna.classList.remove('hidden', 'active');
+                oleg.classList.remove('hidden', 'active');
+
+                if (service === 'Стрижка') {
+                    anna.classList.add('active');
+                    selectedMaster = 'Анна';
+                } else if (service === 'Окрашивание') {
+                    oleg.classList.add('hidden');
+                    ivan.classList.add('active'); 
+                    selectedMaster = 'Иван';
+                } else {
+                    ivan.classList.add('hidden');
+                    oleg.classList.add('hidden');
+                    anna.classList.add('active');
+                    selectedMaster = 'Анна';
+                }
+
+                document.getElementById('sumMaster').innerText = selectedMaster;
+                renderTimeSlots();
+            }
+
+            window.selectMaster = function(name, el) {
+                if(el.classList.contains('hidden')) return;
+                document.querySelectorAll('.m-select-card').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+                selectedMaster = name;
+                document.getElementById('sumMaster').innerText = name;
+                renderTimeSlots();
+            }
+
+            function renderCalendar() {
+                const container = document.getElementById('dateScroll');
+                container.innerHTML = '';
+                for (let i = 24; i <= 30; i++) {
+                    const dateStr = `${i} Окт`;
+                    const div = document.createElement('div');
+                    div.className = `date-box ${dateStr === selectedDate ? 'active' : ''}`;
+                    div.innerHTML = `<div class="day-name">Окт</div><div class="day-num">${i}</div>`;
+                    div.onclick = () => {
+                        selectedDate = dateStr;
+                        document.getElementById('sumDate').innerText = dateStr;
+                        document.querySelectorAll('.date-box').forEach(d => d.classList.remove('active'));
+                        div.classList.add('active');
+                        selectedTime = null;
+                        document.getElementById('sumTime').innerText = '-';
+                        renderTimeSlots();
+                        checkForm();
+                    };
+                    container.appendChild(div);
+                }
+            }
+
+            function renderTimeSlots() {
+                const grid = document.getElementById('timeGrid');
+                grid.innerHTML = '';
+                allTimeSlots.forEach(time => {
+                    const isBooked = appointments.some(a => a.type === 'appointment' && a.date === selectedDate && a.time === time && a.master === selectedMaster && a.status !== 'cancelled');
+                    const isBreak = appointments.some(a => a.type === 'break' && a.date === selectedDate && a.master === selectedMaster && time >= a.start && time < a.end);
+                    const slot = document.createElement('div');
+                    slot.className = `t-slot ${(isBooked || isBreak) ? 'disabled' : ''}`;
+                    slot.innerText = time;
+                    if (!isBooked && !isBreak) {
+                        slot.onclick = () => {
+                            document.querySelectorAll('.t-slot').forEach(s => s.classList.remove('active'));
+                            slot.classList.add('active');
+                            selectedTime = time;
+                            document.getElementById('sumTime').innerText = time;
+                            checkForm();
+                        };
+                    }
+                    grid.appendChild(slot);
+                });
+            }
+
+            function checkForm() {
+                const phoneDigits = document.getElementById('phoneInput').value.replace(/\D/g, '');
+                const isValid = document.getElementById('nameInput').value.trim().length > 1 && 
+                                phoneDigits.length >= 10 && 
+                                document.getElementById('agreeCheckbox').checked && 
+                                selectedTime !== null;
+                document.getElementById('submitBtn').disabled = !isValid;
+            }
+            function checkLogin() {
+                document.getElementById('btn-login-submit').disabled = !(document.getElementById('masterPhone').value.length > 5 && document.getElementById('masterPassword').value.length > 2);
+            }
+
+            window.submitBooking = function() {
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.innerText = 'Загрузка...';
+                submitBtn.disabled = true;
+                setTimeout(() => {
+                    const service = document.getElementById('sumService').innerText;
+                    const clientName = document.getElementById('nameInput').value;
+                    const clientPhone = document.getElementById('phoneInput').value;
+                    const marketing = document.getElementById('marketingCheckbox').checked;
+                    
+                    currentClientPhone = clientPhone;
+
+                    appointments.push({
+                        id: Date.now(), type: 'appointment', time: selectedTime, date: selectedDate,
+                        client: clientName, phone: clientPhone, service: service, master: selectedMaster,
+                        price: 1500, status: 'pending', rating: null, reviewText: '', marketingConsent: marketing
+                    });
+                    
+                    document.getElementById('modalMainContent').style.display = 'none';
+                    document.getElementById('successScreen').style.display = 'flex';
+                    document.getElementById('successText').innerHTML = `Ждем вас <b>${selectedDate}</b> в <b>${selectedTime}</b> у мастера <b>${selectedMaster}</b>.<br>Наш адрес: г. Москва, ул. Красоты, д. 15`;
+                    submitBtn.innerText = 'Записаться';
+                    checkForm();
+                }, 600);
+            }
+
+            window.loginMaster = function() {
+                const pwd = document.getElementById('masterPassword').value;
+                if (pwd === '0001') currentMaster = 'Иван';
+                else if (pwd === '0002') currentMaster = 'Анна';
+                else if (pwd === '0003') currentMaster = 'Олег';
+                else { showToast('Неверный пароль!', 'error'); return; }
+
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('masterDashboard').style.display = 'block';
+                document.getElementById('dashMasterName').innerText = `Мастер ${currentMaster}`;
+                document.getElementById('masterPassword').value = '';
+                document.getElementById('masterPhone').value = '';
+                renderDashboard();
+            }
+            window.logoutMaster = function() {
+                document.getElementById('masterDashboard').style.display = 'none';
+                document.getElementById('client-site').style.display = 'block';
+                currentMaster = '';
+            }
+
+            window.filterDash = function(status, el) {
+                dashFilter = status;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                el.classList.add('active');
+                renderDashboard();
+            };
+
+            function renderDashboard() {
+                const grid = document.getElementById('dashAppsGrid');
+                grid.innerHTML = '';
+                let myApps = appointments.filter(a => a.master === currentMaster);
+                
+                const total = myApps.filter(a => a.type === 'appointment').length;
+                const done = myApps.filter(a => a.type === 'appointment' && (a.status === 'done' || a.status === 'reviewed')).length;
+                const revenue = myApps.filter(a => a.type === 'appointment' && (a.status === 'done' || a.status === 'reviewed')).reduce((sum, a) => sum + a.price, 0);
+
+                document.getElementById('dashTotalApps').innerText = total;
+                document.getElementById('dashDoneApps').innerText = done;
+                document.getElementById('dashRevenue').innerText = revenue + ' ₽';
+
+                if (dashFilter !== 'all') {
+                    if (dashFilter === 'done') {
+                        myApps = myApps.filter(a => a.type === 'appointment' && (a.status === 'done' || a.status === 'reviewed'));
+                    } else {
+                        myApps = myApps.filter(a => a.type === 'appointment' && a.status === dashFilter);
+                    }
+                }
+                if (myApps.length === 0) { grid.innerHTML = '<p style="color: #888; font-size: 18px;">Нет записей по выбранному фильтру.</p>'; return; }
+
+                myApps.sort((a, b) => (a.time || a.start).localeCompare(b.time || b.start));
+
+                myApps.forEach(app => {
+                    const div = document.createElement('div');
+                    if (app.type === 'break') {
+                        div.className = 'app-card break';
+                        div.innerHTML = `
+                            <div class="app-header"><div class="app-time">⏸️ Перерыв</div><div class="app-date">${app.date}</div></div>
+                            <div class="app-details"><p>С ${app.start} до ${app.end}</p></div>
+                            <div class="app-actions"><button class="btn-sm btn-cancel-sm" onclick="window.removeBreak(${app.id})">Отменить перерыв</button></div>
+                        `;
+                    } else {
+                        div.className = `app-card ${app.status}`;
+                        let actions = '';
+                        
+                        const marketingIcon = app.marketingConsent ? ' <span title="Согласен на рассылку" style="font-size:14px; color:#0F5132;">✉️</span>' : '';
+
+                        if (app.status === 'pending') {
+                            actions = `<div class="app-actions"><button class="btn-sm btn-cancel-sm" onclick="window.updateAppStatus(${app.id}, 'cancelled')">Отменить</button><button class="btn-sm btn-done-sm" onclick="window.updateAppStatus(${app.id}, 'done')">Выполнено</button></div>`;
+                        } else if (app.status === 'done') {
+                            actions = `<div style="margin-top: 15px; color: #0F5132; font-weight: 700;">✅ Выполнено</div>`;
+                            if (app.rating) {
+                                actions += `<div style="margin-top: 8px; color: var(--accent);">${'★'.repeat(app.rating)}</div>`;
+                            }
+                        } else if (app.status === 'reviewed') {
+                            actions = `<div style="margin-top: 15px; color: var(--accent); font-weight: 700;">⭐ Отзыв получен</div>`;
+                            actions += `<div style="margin-top: 5px; color: var(--accent);">${'★'.repeat(app.rating)}</div>`;
+                            if (app.reviewText) actions += `<div style="margin-top: 5px; font-size: 13px; font-style: italic; color: #666;">"${app.reviewText}"</div>`;
+                        } else {
+                            actions = `<div style="margin-top: 15px; color: #d32f2f; font-weight: 700;">❌ Отменено</div>`;
+                        }
+                        
+                        div.innerHTML = `
+                            <div class="app-header"><div class="app-time">${app.time}</div><div class="app-date">${app.date}</div></div>
+                            <div class="app-details"><h4>${app.client}${marketingIcon}</h4><p>${app.service}</p></div>
+                            ${actions}
+                        `;
+                    }
+                    grid.appendChild(div);
+                });
+            }
+
+            window.updateAppStatus = function(id, status) {
+                const app = appointments.find(a => a.id === id);
+                if (app) {
+                    app.status = status;
+                    showToast(status === 'done' ? 'Услуга выполнена! Клиенту отправлен запрос на отзыв.' : 'Запись отменена', status === 'done' ? 'success' : 'error');
+                    renderDashboard();
+                }
+            }
+            window.removeBreak = function(id) {
+                appointments = appointments.filter(a => a.id !== id);
+                showToast('Перерыв отменен');
+                renderDashboard();
+            }
+
+            window.openBreakModal = function() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('breakDate').value = today;
+                document.getElementById('breakModal').classList.add('active');
+            }
+            window.closeBreakModal = function() {
+                document.getElementById('breakModal').classList.remove('active');
+            }
+            window.saveBreak = function() {
+                const start = document.getElementById('breakStart').value;
+                const end = document.getElementById('breakEnd').value;
+                const dateInput = document.getElementById('breakDate').value;
+                
+                if (start >= end) { showToast('Время окончания должно быть больше времени начала!', 'error'); return; }
+                if (!dateInput) { showToast('Выберите дату!', 'error'); return; }
+
+                const dateObj = new Date(dateInput);
+                const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+                const formattedDate = `${dateObj.getDate()} ${months[dateObj.getMonth()]}`;
+
+                const hasConflict = appointments.some(a => 
+                    a.type === 'appointment' && a.master === currentMaster && a.date === formattedDate && 
+                    a.status !== 'cancelled' && (a.time >= start && a.time < end)
+                );
+
+                if (hasConflict) { showToast('В это время уже есть запись клиента! Сначала перенесите её.', 'error'); return; }
+
+                appointments.push({ id: Date.now(), type: 'break', date: formattedDate, start: start, end: end, master: currentMaster });
+                
+                closeBreakModal();
+                showToast('Время закрыто на перерыв');
+                renderDashboard();
+            }
+
+            window.openClientAppointments = function() {
+                renderClientAppointments();
+                document.getElementById('clientAppointmentsModal').classList.add('active');
+            }
+            window.closeClientAppointments = function() {
+                document.getElementById('clientAppointmentsModal').classList.remove('active');
+            }
+
+            function renderClientAppointments() {
+                const list = document.getElementById('clientApptsList');
+                list.innerHTML = '';
+                
+                const myApps = appointments.filter(a => a.type === 'appointment' && (a.phone === currentClientPhone || currentClientPhone === ''));
+
+                if (myApps.length === 0) {
+                    list.innerHTML = '<p class="no-reviews">У вас пока нет записей. Нажмите «Записаться онлайн», чтобы создать первую.</p>';
+                    return;
+                }
+
+                myApps.sort((a, b) => {
+                    if (a.date !== b.date) return a.date.localeCompare(b.date);
+                    return a.time.localeCompare(b.time);
+                });
+
+                myApps.forEach(app => {
+                    const div = document.createElement('div');
+                    div.className = `client-appt-card ${app.status}`;
+                    
+                    let statusHtml = '';
+                    let actionHtml = '';
+                    
+                    if (app.status === 'pending') {
+                        statusHtml = '<span style="color: var(--warning); font-weight: 600;">⏳ Ожидает</span>';
+                        actionHtml = `<button class="btn-sm btn-cancel-sm" onclick="window.cancelClientAppt(${app.id})">Отменить запись</button>`;
+                    } else if (app.status === 'done') {
+                        statusHtml = '<span style="color: var(--primary); font-weight: 600;">✅ Услуга выполнена</span>';
+                        actionHtml = `<button class="btn-primary" style="width: 100%; padding: 12px; font-size: 14px;" onclick="window.openReviewModal(${app.id})">⭐ Оставить отзыв</button>`;
+                    } else if (app.status === 'reviewed') {
+                        statusHtml = '<span style="color: var(--accent); font-weight: 600;">⭐ Спасибо за отзыв!</span>';
+                        actionHtml = `<div style="color: var(--accent); font-size: 20px; text-align: center;">${'★'.repeat(app.rating)}${'☆'.repeat(5-app.rating)}</div>`;
+                        if (app.reviewText) {
+                            actionHtml += `<div style="margin-top: 5px; font-size: 13px; font-style: italic; color: #666; text-align: center;">"${app.reviewText}"</div>`;
+                        }
+                    } else {
+                        statusHtml = '<span style="color: var(--danger); font-weight: 600;">❌ Отменена</span>';
+                    }
+
+                    div.innerHTML = `
+                        <div class="client-appt-header">
+                            <div>
+                                <div class="client-appt-date">${app.time} • ${app.date}</div>
+                                <div class="client-appt-info">Мастер: ${app.master} | ${app.service}</div>
+                            </div>
+                            <div>${statusHtml}</div>
+                        </div>
+                        <div class="client-appt-actions">${actionHtml}</div>
+                    `;
+                    list.appendChild(div);
+                });
+            }
+
+            window.cancelClientAppt = function(id) {
+                const app = appointments.find(a => a.id === id);
+                if (app) {
+                    app.status = 'cancelled';
+                    showToast('Вы отменили запись', 'error');
+                    renderClientAppointments();
+                }
+            }
+
+            window.openReviewModal = function(id) {
+                currentReviewAppId = id;
+                currentRating = 0;
+                document.getElementById('reviewTextInput').value = '';
+                updateStarsUI(0);
+                document.getElementById('submitReviewBtn').disabled = true;
+                closeClientAppointments();
+                document.getElementById('reviewModal').classList.add('active');
+            }
+            window.closeReviewModal = function() {
+                document.getElementById('reviewModal').classList.remove('active');
+            }
+            window.setRating = function(val) {
+                currentRating = val;
+                updateStarsUI(val);
+                document.getElementById('submitReviewBtn').disabled = false;
+            }
+            function updateStarsUI(rating) {
+                document.querySelectorAll('#reviewModal .star').forEach((star, index) => {
+                    if (index < rating) star.classList.add('active');
+                    else star.classList.remove('active');
+                });
+            }
+
+            window.submitReview = function() {
+                if (!currentReviewAppId || currentRating === 0) return;
+
+                const app = appointments.find(a => a.id === currentReviewAppId);
+                if (!app) return;
+
+                app.status = 'reviewed';
+                app.rating = currentRating;
+                app.reviewText = document.getElementById('reviewTextInput').value;
+
+                masterReviews[app.master].unshift({
+                    rating: currentRating,
+                    text: app.reviewText,
+                    client: app.client,
+                    date: app.date
+                });
+
+                const master = app.master;
+                const currentTotal = masterRatings[master].rating * masterRatings[master].count;
+                const newCount = masterRatings[master].count + 1;
+                masterRatings[master].rating = (currentTotal + currentRating) / newCount;
+                masterRatings[master].count = newCount;
+
+                closeReviewModal();
+                showToast('Спасибо за ваш отзыв!');
+                updateMasterCardRatings();
+                renderDashboard();
+            };
+
+            applyPhoneMask(document.getElementById('phoneInput'));
+            applyPhoneMask(document.getElementById('masterPhone'));
+            
+            document.getElementById('nameInput').addEventListener('input', checkForm);
+            document.getElementById('agreeCheckbox').addEventListener('change', checkForm);
+            document.getElementById('masterPassword').addEventListener('input', checkLogin);
+            document.getElementById('btn-login-submit').disabled = true;
+
+            updateMasterCardRatings();
+
+            document.addEventListener('click', (e) => {
+                const menu = document.getElementById('serviceMenu');
+                const box = document.getElementById('serviceBox');
+                if (menu && menu.classList.contains('active') && !box.contains(e.target) && !menu.contains(e.target)) {
+                    menu.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
