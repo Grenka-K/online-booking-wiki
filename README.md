@@ -22,7 +22,10 @@
 ## 📂 Навигация по репозиторию
 📖 **[Полная база знаний в Wiki](https://github.com/Grenka-K/online-booking-wiki/wiki)** — (Требования, Схемы, RTM).
 
-Исходные файлы (`.docx`) находятся в папке `docs/`:
-*   📁 `01_Analysis` — Результаты интервью и декомпозиция.
-*   📁 `02_Requirements` — ФТ, НФТ, ТЗ, User Stories.
-*   📁 `03_Architecture` — BPMN-схемы и модели данных.
+Исходные файлы (`.docx`, `.html`) находятся в папке `docs/`:
+
+*   📁 `01_Analysis` — Результаты интервью, карта стейкхолдеров и декомпозиция.
+*   📁 `02_Requirements` — ФТ, НФТ, ТЗ по ГОСТ, User Stories и Use Cases.
+*   📁 `03_Architecture` — BPMN-схемы, ER-модели и DFD.
+*   📁 `04_UX_UI_Design` — UX/UI дизайн: Low-Fi и High-Fi прототипы, а также Отчет о качестве (QA).
+
